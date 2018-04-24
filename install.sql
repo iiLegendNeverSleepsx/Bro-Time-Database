@@ -1,10 +1,13 @@
 \set ECHO all
-\qecho 'Installing DB schema'
+\qecho 'Installing database schema...'
 
-/* Creating tables first */
-\i test_user/create_tables.sql
-
-/* Stored functions */
-\i test_user/functions.sql
+-- Schema
+\i discord/schema.sql
+-- Data types
+\i discord/datatypes.sql
+-- Tables
+\i discord/tables.sql
+-- Functions
+\i discord/functions.sql
 
 \qecho 'Done.'
