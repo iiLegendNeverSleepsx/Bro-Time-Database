@@ -1,6 +1,7 @@
 language: c
+dist: trusty
 env:
-  - PGVERSION=10.3
+  - PGVERSION=10
 before_install:
   - wget https://gist.github.com/petere/5893799/raw/apt.postgresql.org.sh
   - wget https://gist.github.com/C-Pro/8491912/raw/pg-pgtap-install.sh
