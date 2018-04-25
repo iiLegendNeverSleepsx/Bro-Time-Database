@@ -11,6 +11,6 @@
 
 BEGIN;
 
-\i create_tables.sql
-\i test_data.sql
+\i schema.sql
+\i data.sql
 \i functions.sql
