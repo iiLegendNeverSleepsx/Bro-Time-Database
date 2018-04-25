@@ -1,5 +1,5 @@
 -- Create the tables.
-CREATE TABLE IF NOT EXISTS discord.Settings (
+CREATE TABLE discord.Settings (
 	Namespace varchar(32)
 		CONSTRAINT Settings_Namespace_PK PRIMARY KEY
 		CONSTRAINT Settings_Namespace_C CHECK (Namespace SIMILAR TO '[a-zA-Z]'),
@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS discord.Settings (
 		CONSTRAINT Settings_Value_C CHECK (pg_column_size(Value) <= 128160)
 );
 
-CREATE TABLE IF NOT EXISTS discord.User_Settings (
+CREATE TABLE discord.User_Settings (
 	User_Id bigint,
 	Value jsonb
 		CONSTRAINT User_Settings_Value_NN NOT NULL
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS discord.User_Settings (
 	CONSTRAINT User_Settings_PK PRIMARY KEY (User_Id, Namespace)
 );
 
-CREATE TABLE IF NOT EXISTS discord.Triggers (
+CREATE TABLE discord.Triggers (
 	Trigger_Id varchar(32)
     	CONSTRAINT Triggers_Trigger_Id_C CHECK (Trigger_Id SIMILAR TO '[a-zA-Z]'),
 	Event_Id varchar(32)
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS discord.Triggers (
 	CONSTRAINT Triggers_PK PRIMARY KEY (Trigger_Id, Server_Id)
 );
 
-CREATE TABLE IF NOT EXISTS discord.Servers (
+CREATE TABLE discord.Servers (
 	Server_Id bigint
 		CONSTRAINT Servers_Server_Id_PK PRIMARY KEY,
 	Prefix varchar(32) DEFAULT '/'
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS discord.Servers (
     CONSTRAINT Servers_Triggers_FK FOREIGN KEY (Trigger_Id, Server_Id) REFERENCES discord.Triggers(Trigger_Id, Server_Id)
 );
 
-CREATE TABLE IF NOT EXISTS discord.Restrictions (
+CREATE TABLE discord.Restrictions (
 	Restriction_Type discord.accessType,
 	Restriction_Method discord.accessMethod,
 	Ids bigint[]
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS discord.Restrictions (
 	CONSTRAINT Restrictions_PK PRIMARY KEY (Restriction_Type, Restriction_Method, Command_Id)
 );
 
-CREATE TABLE IF NOT EXISTS discord.Commands (
+CREATE TABLE discord.Commands (
 	Command_Id varchar(32)
     	CONSTRAINT Commands_Command_Id_PK PRIMARY KEY
     	CONSTRAINT Commands_Command_Id_C CHECK (Command_Id SIMILAR TO '[a-zA-Z]'),
@@ -72,9 +72,5 @@ CREATE TABLE IF NOT EXISTS discord.Commands (
     CONSTRAINT Commands_Restrictions_FK FOREIGN KEY (Command_Id, Restriction_Type, Restriction_Method) REFERENCES discord.Restrictions(Command_Id, Restriction_Type, Restriction_Method)
 );
 
-DO $$ BEGIN
-	ALTER TABLE discord.Restrictions
-		ADD CONSTRAINT Restrictions_Servers_FK FOREIGN KEY (Server_Id) REFERENCES discord.Servers(Server_Id);
-EXCEPTION
-	WHEN duplicate_object THEN null;
-END $$;
+ALTER TABLE discord.Restrictions
+	ADD CONSTRAINT Restrictions_Servers_FK FOREIGN KEY (Server_Id) REFERENCES discord.Servers(Server_Id);
