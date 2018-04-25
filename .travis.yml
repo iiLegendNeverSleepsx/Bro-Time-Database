@@ -1,5 +1,6 @@
 language: c
 dist: trusty
+sudo: true
 env:
   - PGVERSION=9.2
 before_install:
