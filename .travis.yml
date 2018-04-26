@@ -2,16 +2,16 @@ language: c
 dist: trusty
 sudo: true
 env:
-  - PGVERSION=9.2
+  - PGVERSION=10.3
+services:
+    - postgres
+addons:
+  postgresql: $PGVERSION
 before_install:
-  - wget https://gist.github.com/petere/5893799/raw/apt.postgresql.org.sh
   - wget https://gist.github.com/C-Pro/8491912/raw/pg-pgtap-install.sh
-  - wget https://gist.github.com/C-Pro/8492131/raw/install.cfg
-  - sudo sh ./apt.postgresql.org.sh
   - sudo bash -c 'echo yes | cpan TAP::Parser::SourceHandler::pgTAP'
   - bash pg-pgtap-install.sh
 install:
-  - echo 'test' | bash ./install.sh
   - cat install.log
 script:
   - export PERL5LIB=~/perl5/lib/perl5
