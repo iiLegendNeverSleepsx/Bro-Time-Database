@@ -8,7 +8,7 @@ services:
 addons:
   postgresql: $PGVERSION
 before_install:
-  - wget https://gist.github.com/C-Pro/8491912/raw/pg-pgtap-install.sh
+  - wget https://gist.githubusercontent.com/cloewen8/257253a1a4d23111315bed613681aca3/raw/dbb0456610f7f890b6c00b518694fce9521e5f61/pg-pgtap-install.sh
   - sudo bash -c 'echo yes | cpan TAP::Parser::SourceHandler::pgTAP'
   - bash pg-pgtap-install.sh
 install:
