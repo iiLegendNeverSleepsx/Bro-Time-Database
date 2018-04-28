@@ -2,7 +2,7 @@ language: c
 dist: trusty
 sudo: true
 env:
-  - PGVERSION=10.3
+  - PGVERSION=10
 services:
     - postgres
 addons:
