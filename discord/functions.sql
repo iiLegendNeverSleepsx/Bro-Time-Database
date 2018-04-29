@@ -1,2 +1,2 @@
-\i addBotFunction.sql
-\i hasAccessFunction.sql
+\i discord/addBotFunction.sql
+\i discord/hasAccessFunction.sql

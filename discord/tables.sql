@@ -3,14 +3,14 @@ CREATE TABLE discord.Settings (
 	Namespace varchar(32)
 		CONSTRAINT Settings_Namespace_PK PRIMARY KEY
 		CONSTRAINT Settings_Namespace_C CHECK (Namespace SIMILAR TO '[a-zA-Z]'),
-	Value jsonb
+	Value json
 		CONSTRAINT Settings_Value_NN NOT NULL
 		CONSTRAINT Settings_Value_C CHECK (pg_column_size(Value) <= 128160)
 );
 
 CREATE TABLE discord.User_Settings (
 	User_Id bigint,
-	Value jsonb
+	Value json
 		CONSTRAINT User_Settings_Value_NN NOT NULL
 		CONSTRAINT User_Settings_Value_C CHECK (pg_column_size(Value) <= 128160),
 	Namespace varchar(32)
