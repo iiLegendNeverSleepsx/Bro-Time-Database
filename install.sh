@@ -8,4 +8,4 @@ echo "Enabling extensions in database."
 psql -h $db_host -d $db_name -U postgres -f extensions.sql &>>install.log
 
 echo "Creating schema."
-psql -h $db_host -d $db_name -U $db_user -f install.sql &>> install.log
+psql -h $db_host -d $db_name -U postgres -f install.sql &>> install.log
