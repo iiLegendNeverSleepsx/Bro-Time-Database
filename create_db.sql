@@ -1,2 +1,2 @@
-create user :db_user with encrypted password :db_pass;
+create user :db_user;
 create database :db_name with owner :db_user;
