@@ -12,7 +12,7 @@ WHERE table_schema = 'discord' AND data_type IN ('text', 'ARRAY', 'json', 'jsonb
 CREATE FUNCTION test.columns() RETURNS setof text AS $$
 DECLARE
 	column record;
-	all cursor() FOR SELECT schema, table, column
+	all cursor FOR SELECT schema, table, column
 		FROM test.columns;
 	unlimited cursor FOR SELECT schema, table, column
 		FROM test.columns_unlimited;
