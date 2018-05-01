@@ -1,7 +1,8 @@
 \i setup.sql
-select * from no_plan(); -- select plan(7+2+1);
+SELECT plan(currval('test.tests'));
 
---0 tests
+-- Standard Tests
+SELECT * FROM test.columns();
 
 SELECT * FROM finish();
 

@@ -1,1 +1,5 @@
-create schema test;
+CREATE SCHEMA test;
+CREATE SEQUENCE test.tests
+	INCREMENT BY 1
+	START WITH 0
+	NO CACHE;
