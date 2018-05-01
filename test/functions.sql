@@ -11,27 +11,27 @@ WHERE table_schema = 'discord' AND data_type IN ('text', 'ARRAY', 'json', 'jsonb
 
 CREATE FUNCTION test.columns() RETURNS setof text AS $$
 DECLARE
-	column record;
-	all cursor FOR SELECT schema, table, column
+	v_column record;
+	v_all cursor FOR SELECT schema, table, column
 		FROM test.columns;
-	unlimited cursor FOR SELECT schema, table, column
+	v_unlimited cursor FOR SELECT schema, table, column
 		FROM test.columns_unlimited;
 BEGIN   
-	OPEN all;
+	OPEN v_all;
 	LOOP
-		FETCH all INTO column;
+		FETCH v_all INTO v_column;
 		EXIT WHEN NOT FOUND;
 
-		RETURN NEXT matches(column.column, '^(?:[a-z]+_)+[a-z]+$', 'Column name contains alphabetic words separated by underscores.');
+		RETURN NEXT matches(v_column.column, '^(?:[a-z]+_)+[a-z]+$', 'Column name contains alphabetic words separated by underscores.');
 	END LOOP;
-	CLOSE all;
-	OPEN unlimited;
+	CLOSE v_all;
+	OPEN v_unlimited;
 	LOOP
-		FETCH unlimited INTO column;
+		FETCH v_unlimited INTO v_column;
 		EXIT WHEN NOT FOUND;
 
-		RETURN NEXT col_has_check(column.schema, column.table, column.column, 'Columns that are not implicitly limited on range must be explicitly limited.');
+		RETURN NEXT col_has_check(v_column.schema, v_column.table, v_column.column, 'Columns that are not implicitly limited on range must be explicitly limited.');
 	END LOOP;
-	CLOSE unlimited;
+	CLOSE v_unlimited;
 END;
 $$ LANGUAGE plpgsql;

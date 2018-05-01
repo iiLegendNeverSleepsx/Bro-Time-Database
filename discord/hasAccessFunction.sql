@@ -1,67 +1,67 @@
-CREATE OR REPLACE FUNCTION discord.HasAccess(command varchar, author bigint,
-	serverId bigint DEFAULT null, channelId bigint DEFAULT null, roleId bigint DEFAULT null) RETURNS boolean AS $$
+CREATE OR REPLACE FUNCTION discord.HasAccess(p_command varchar, p_author bigint,
+	p_serverId bigint DEFAULT null, p_channelId bigint DEFAULT null, p_roleId bigint DEFAULT null) RETURNS boolean AS $$
 DECLARE
-	result boolean;
-    rValue record;
-	rValues cursor(rType discord.accessType) FOR SELECT Restriction_Method RMethod, Ids
+	v_result boolean;
+    v_rValue record;
+	v_rValues cursor(rType discord.accessType) FOR SELECT Restriction_Method RMethod, Ids
 		FROM Restrictions
-		WHERE Command_Id = commandId and
-			(Server_Id = null or serverId = null or Server_Id = serverId) and
+		WHERE Command_Id = p_commandId and
+			(Server_Id = null or p_serverId = null or Server_Id = p_serverId) and
 			Restriction_Type = rType
 		ORDER BY Restriction_Method;
 BEGIN
-	OPEN rValues(discord.accessType.allow);
+	OPEN v_rValues(discord.accessType.allow);
 	LOOP
-		FETCH rValues INTO rValue;
+		FETCH v_rValues INTO v_rValue;
 		EXIT WHEN NOT FOUND;
 		
 		-- Check if allowed. - 'dm', 'server', 'everyone', 'channel', 'role'
-		IF rValue.RMethod = discord.accessMethod.dm THEN
-			result := serverId = null;
-		ELSIF rValue.RMethod = discord.accessMethod.server THEN
-			result := serverId = ANY(rValue.Ids);
-		ELSIF rValue.RMethod = discord.accessMethod.everyone THEN
-			result := true;
-		ELSIF rValue.RMethod = discord.accessMethod.channel THEN
-			result := channelId = ANY(rValue.Ids);
-		ELSIF rValue.RMethod = discord.accessMethod.role THEN
-			result := roleId = ANY(rValue.Ids);
+		IF v_rValue.RMethod = discord.accessMethod.dm THEN
+			v_result := p_serverId = null;
+		ELSIF v_rValue.RMethod = discord.accessMethod.server THEN
+			v_result := p_serverId = ANY(v_rValue.Ids);
+		ELSIF v_rValue.RMethod = discord.accessMethod.everyone THEN
+			v_result := true;
+		ELSIF v_rValue.RMethod = discord.accessMethod.channel THEN
+			v_result := p_channelId = ANY(v_rValue.Ids);
+		ELSIF v_rValue.RMethod = discord.accessMethod.role THEN
+			v_result := p_roleId = ANY(v_rValue.Ids);
 		ELSE
-			RAISE WARNING 'discord.HasAccess has no implementation for allowing %.', rValue.RMethod USING
+			RAISE WARNING 'discord.HasAccess has no implementation for allowing %.', v_rValue.RMethod USING
 				HINT = 'Try replacing the discord.HasAccess function.';
 		END IF;
 		
-		EXIT WHEN result = true;
+		EXIT WHEN v_result = true;
 	END LOOP;
-	CLOSE rValues;
-	IF result = true THEN
-		OPEN rValues(discord.accessType.deny);
+	CLOSE v_rValues;
+	IF v_result = true THEN
+		OPEN v_rValues(discord.accessType.deny);
 		LOOP
-			FETCH rValues INTO rValue;
+			FETCH v_rValues INTO v_rValue;
 			EXIT WHEN NOT FOUND;
 			
-			IF rValue.RMethod = discord.accessMethod.dm THEN
-				result := serverId != null;
-			ELSIF rValue.RMethod = discord.accessMethod.server THEN
-				result := serverId != ALL(rValue.Ids);
-			ELSIF rValue.RMethod = discord.accessMethod.everyone THEN
-				result := false;
-			ELSIF rValue.RMethod = discord.accessMethod.channel THEN
-				result := channelId != ALL(rValue.Ids);
-			ELSIF rValue.RMethod = discord.accessMethod.role THEN
-				result := roleId != ALL(rValue.Ids);
+			IF v_rValue.RMethod = discord.accessMethod.dm THEN
+				v_result := p_serverId != null;
+			ELSIF v_rValue.RMethod = discord.accessMethod.server THEN
+				v_result := p_serverId != ALL(v_rValue.Ids);
+			ELSIF v_rValue.RMethod = discord.accessMethod.everyone THEN
+				v_result := false;
+			ELSIF v_rValue.RMethod = discord.accessMethod.channel THEN
+				v_result := p_channelId != ALL(v_rValue.Ids);
+			ELSIF v_rValue.RMethod = discord.accessMethod.role THEN
+				v_result := p_roleId != ALL(v_rValue.Ids);
 			ELSE
-				RAISE WARNING 'discord.HasAccess has no implementation for denying %.', rValues.Method USING
+				RAISE WARNING 'discord.HasAccess has no implementation for denying %.', v_rValues.Method USING
 					HINT = 'Try replacing the discord.HasAccess function.';
 			END IF;
 			
-			EXIT WHEN result = false;
+			EXIT WHEN v_result = false;
 		END LOOP;
-		CLOSE rValues;
+		CLOSE v_rValues;
 	END IF;
-	IF result = null THEN
-		result := false;
+	IF v_result = null THEN
+		v_result := false;
 	END IF;
-	RETURN result;
+	RETURN v_result;
 END;
 $$ LANGUAGE plpgsql;
