@@ -7,7 +7,7 @@ WHERE table_schema = 'discord';
 CREATE VIEW test.columns_unlimited AS
 SELECT nextval('test.tests') AS id, table_schema AS schema, table_name AS table, column_name AS column
 FROM information_schema.columns
-WHERE table_schema = 'discord' AND data_type IN ('ARRAY', 'json', 'jsonb', 'xml');
+WHERE table_schema = 'discord' AND data_type IN ('text', 'ARRAY', 'json', 'jsonb', 'xml');
 
 CREATE FUNCTION test.columns() RETURNS setof text AS $$
 DECLARE
