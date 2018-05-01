@@ -1,20 +1,20 @@
 -- All columns.
 CREATE VIEW test.columns AS
-SELECT nextval('test.tests') AS id, table_schema AS schema, table_name AS table, column_name AS column
+SELECT nextval('test.tests') AS id, table_schema, table_name, column_name
 FROM information_schema.columns
 WHERE table_schema = 'discord';
 -- All columns without implicit range limits.
 CREATE VIEW test.columns_unlimited AS
-SELECT nextval('test.tests') AS id, table_schema AS schema, table_name AS table, column_name AS column
+SELECT nextval('test.tests') AS id, table_schema, table_name, column_name
 FROM information_schema.columns
 WHERE table_schema = 'discord' AND data_type IN ('text', 'ARRAY', 'json', 'jsonb', 'xml');
 
 CREATE FUNCTION test.columns() RETURNS setof text AS $$
 DECLARE
 	v_column record;
-	v_all cursor FOR SELECT schema, table, column
+	v_all cursor FOR SELECT table_schema, table_name, column_name
 		FROM test.columns;
-	v_unlimited cursor FOR SELECT schema, table, column
+	v_unlimited cursor FOR SELECT table_schema, table_name, column_name
 		FROM test.columns_unlimited;
 BEGIN   
 	OPEN v_all;
