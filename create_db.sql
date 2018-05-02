@@ -1,1 +1,1 @@
-create database :db_name with owner postgres;
+create database :db_name;
