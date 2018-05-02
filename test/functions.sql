@@ -58,4 +58,4 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-\i discord_functions.sql
+\i test/discord_functions.sql
