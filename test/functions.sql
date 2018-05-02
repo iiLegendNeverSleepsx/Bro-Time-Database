@@ -10,7 +10,7 @@ FROM information_schema.columns
 WHERE table_schema = 'discord' AND data_type IN ('text', 'ARRAY', 'json', 'jsonb', 'xml');
 
 INSERT INTO test.tests(schema, total)
-	VALUES('discord', (SELECT COUNT(*)
+	VALUES('shared', (SELECT COUNT(*)
 		FROM test.columns, test.columns_unlimited));
 
 CREATE FUNCTION test.columns() RETURNS setof text AS $$

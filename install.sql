@@ -1,8 +1,9 @@
 \set ECHO all
 \qecho 'Installing database schema...'
 
--- Schema
+-- Shared
 \i test/schema.sql
+\i test/functions.sql
 
 -- Data types
 \i discord/datatypes.sql

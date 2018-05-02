@@ -10,7 +10,5 @@
 \set ON_ERROR_STOP true
 
 BEGIN;
-\i schema.sql
 \i data.sql
-\i functions.sql
 COMMIT;

@@ -1,7 +1,7 @@
 \i setup.sql
 SELECT plan(total)
 FROM test.tests
-WHERE schema = 'discord';
+WHERE schema = 'shared' OR schema = 'discord';
 
 -- Standard Tests
 SELECT * FROM test.columns();
