@@ -1,19 +1,18 @@
 language: c
-dist: trusty
-sudo: true
 env:
-  - PGVERSION=9.2
+  - PGVERSION=10
     db_host=localhost
-    db_port=55436
+    db_port=55435
     db_name=skel_test
 before_install:
-  - wget https://gist.github.com/petere/5893799/raw/apt.postgresql.org.sh
-  - wget https://gist.github.com/C-Pro/8491912/raw/pg-pgtap-install.sh
+  - wget https://gist.githubusercontent.com/petere/5893799/raw/apt.postgresql.org.sh
+  - wget https://gist.githubusercontent.com/cloewen8/257253a1a4d23111315bed613681aca3/raw/pg-pgtap-install.sh
   - sudo sh ./apt.postgresql.org.sh
+  - sudo rm -vf /etc/apt/sources.list.d/pgdg-source.list
   - sudo bash -c 'echo yes | cpan TAP::Parser::SourceHandler::pgTAP'
   - bash pg-pgtap-install.sh
 install:
-  - echo 'test' | bash ./install.sh
+  - bash ./install.sh
   - cat install.log
 script:
   - cd test && pg_prove -h $db_host -p $db_port -d $db_name -U postgres tests/run_*.sql
