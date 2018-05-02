@@ -1,9 +1,9 @@
 \i setup.sql
-SELECT plan(total)
-FROM test.tests
-WHERE schema = 'discord';
+SELECT no_plan();
 
 -- Standard Tests
 SELECT * FROM test.columns();
 
 SELECT * FROM finish();
+
+ROLLBACK;

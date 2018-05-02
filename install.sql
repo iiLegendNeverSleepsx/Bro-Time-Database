@@ -2,10 +2,8 @@
 \qecho 'Installing database schema...'
 
 -- Shared
-BEGIN;
 \i test/schema.sql
 \i test/functions.sql
-COMMIT;
 
 -- Schema
 \i discord/schema.sql
