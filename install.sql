@@ -5,6 +5,8 @@
 \i test/schema.sql
 \i test/functions.sql
 
+-- Schema
+\i discord/schema.sql
 -- Data types
 \i discord/datatypes.sql
 -- Tables
