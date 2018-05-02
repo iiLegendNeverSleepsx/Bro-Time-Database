@@ -1,4 +1,5 @@
 CREATE SCHEMA test;
-CREATE SEQUENCE test.tests
-	INCREMENT BY 1
-	START WITH 1;
+CREATE TABLE test.tests (
+	schema text,
+	total integer
+);

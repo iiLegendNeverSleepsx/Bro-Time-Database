@@ -2,7 +2,8 @@
 \qecho 'Installing database schema...'
 
 -- Schema
-\i discord/schema.sql
+\i test/schema.sql
+
 -- Data types
 \i discord/datatypes.sql
 -- Tables

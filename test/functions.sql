@@ -1,13 +1,17 @@
 -- All columns.
 CREATE VIEW test.columns AS
-SELECT nextval('test.tests') AS id, table_schema, table_name, column_name
+SELECT \table_schema, table_name, column_name
 FROM information_schema.columns
 WHERE table_schema = 'discord';
 -- All columns without implicit range limits.
 CREATE VIEW test.columns_unlimited AS
-SELECT nextval('test.tests') AS id, table_schema, table_name, column_name
+SELECT table_schema, table_name, column_name
 FROM information_schema.columns
 WHERE table_schema = 'discord' AND data_type IN ('text', 'ARRAY', 'json', 'jsonb', 'xml');
+
+INSERT INTO test.tests(schema, total)
+	VALUES('discord', (SELECT COUNT(*)
+		FROM test.columns, test.columns_unlimited));
 
 CREATE FUNCTION test.columns() RETURNS setof text AS $$
 DECLARE
