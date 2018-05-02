@@ -9,9 +9,9 @@ SELECT table_schema, table_name, column_name
 FROM information_schema.columns
 WHERE table_schema = 'discord' AND data_type IN ('text', 'ARRAY', 'json', 'jsonb', 'xml');
 
-INSERT INTO test.tests(schema, total)
-	VALUES('shared', (SELECT COUNT(*)
-		FROM test.columns, test.columns_unlimited));
+UPDATE test.tests
+SET total = total + COUNT(*)
+FROM test.columns, test.columns_unlimited
 
 CREATE FUNCTION test.columns() RETURNS setof text AS $$
 DECLARE
