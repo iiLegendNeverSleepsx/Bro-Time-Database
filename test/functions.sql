@@ -10,8 +10,8 @@ FROM information_schema.columns
 WHERE table_schema = 'discord' AND data_type IN ('text', 'ARRAY', 'json', 'jsonb', 'xml');
 
 UPDATE test.tests
-SET total = total + COUNT(*)
-FROM test.columns, test.columns_unlimited;
+SET total = total + (SELECT COUNT(*)
+	FROM test.columns, test.columns_unlimited);
 
 CREATE FUNCTION test.columns() RETURNS setof text AS $$
 DECLARE
