@@ -12,7 +12,7 @@ before_install:
   - sudo bash -c 'echo yes | cpan TAP::Parser::SourceHandler::pgTAP'
   - bash pg-pgtap-install.sh
 install:
-  - echo bash ./install.sh
+  - bash ./install.sh
   - cat install.log
 script:
   - cd test && pg_prove -h $db_host -p $db_port -d $db_name -U postgres tests/run_*.sql
