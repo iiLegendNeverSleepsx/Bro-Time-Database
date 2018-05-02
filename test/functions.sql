@@ -1,6 +1,6 @@
 -- All columns.
 CREATE VIEW test.columns AS
-SELECT \table_schema, table_name, column_name
+SELECT table_schema, table_name, column_name
 FROM information_schema.columns
 WHERE table_schema = 'discord';
 -- All columns without implicit range limits.
