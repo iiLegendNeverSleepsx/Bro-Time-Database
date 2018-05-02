@@ -1,7 +1,12 @@
 \i setup.sql
-SELECT plan(SELECT CAST(SUM(total) AS integer)
-	FROM test.tests
-	WHERE schema = 'shared' OR schema = 'discord');
+DECLARE
+	total integer;
+BEGIN
+	total := (SELECT SUM(total)
+		FROM test.tests
+		WHERE schema = 'shared' OR schema = 'discord');
+	plan(total);
+END;
 
 -- Standard Tests
 SELECT * FROM test.columns();
