@@ -1,12 +1,14 @@
 \i setup.sql
+DO $$
 DECLARE
-	total integer;
+	v_total integer;
 BEGIN
-	total := (SELECT SUM(total)
+	v_total := (SELECT SUM(total)
 		FROM test.tests
 		WHERE schema = 'shared' OR schema = 'discord');
-	plan(total);
+	plan(v_total);
 END;
+$$
 
 -- Standard Tests
 SELECT * FROM test.columns();
