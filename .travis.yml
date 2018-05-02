@@ -1,10 +1,8 @@
 language: c
-dist: trusty
-sudo: true
 env:
   - PGVERSION=10
     db_host=localhost
-    db_port=55436
+    db_port=55435
     db_name=skel_test
 before_install:
   - wget https://gist.githubusercontent.com/petere/5893799/raw/apt.postgresql.org.sh
@@ -14,7 +12,7 @@ before_install:
   - sudo bash -c 'echo yes | cpan TAP::Parser::SourceHandler::pgTAP'
   - bash pg-pgtap-install.sh
 install:
-  - echo 'test' | bash ./install.sh
+  - echo bash ./install.sh
   - cat install.log
 script:
   - cd test && pg_prove -h $db_host -p $db_port -d $db_name -U postgres tests/run_*.sql
