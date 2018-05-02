@@ -1,5 +1,5 @@
 \i setup.sql
-SELECT plan(SUM(total))
+SELECT plan(CAST(SUM(total) AS integer))
 FROM test.tests
 WHERE schema = 'shared' OR schema = 'discord';
 
