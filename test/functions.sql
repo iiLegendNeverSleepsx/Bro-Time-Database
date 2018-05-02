@@ -57,3 +57,5 @@ BEGIN
 	CLOSE v_unlimited;
 END;
 $$ LANGUAGE plpgsql;
+
+\i discord_functions.sql
