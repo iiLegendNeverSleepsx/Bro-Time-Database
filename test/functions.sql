@@ -11,7 +11,7 @@ WHERE table_schema = 'discord' AND data_type IN ('text', 'ARRAY', 'json', 'jsonb
 
 UPDATE test.tests
 SET total = total + COUNT(*)
-FROM test.columns, test.columns_unlimited
+FROM test.columns, test.columns_unlimited;
 
 CREATE FUNCTION test.columns() RETURNS setof text AS $$
 DECLARE
