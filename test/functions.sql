@@ -22,7 +22,7 @@ BEGIN
 		FETCH v_all INTO v_column;
 		EXIT WHEN NOT FOUND;
 
-		RETURN NEXT matches(v_column.column_name, '^(?:[a-z]+_)+[a-z]+$', 'Column name contains alphabetic words separated by underscores.');
+		RETURN NEXT matches(v_column.column_name, '^(?:[a-z]+_?)+[a-z]+$', 'Column name contains alphabetic words separated by underscores.');
 	END LOOP;
 	CLOSE v_all;
 	OPEN v_unlimited;
