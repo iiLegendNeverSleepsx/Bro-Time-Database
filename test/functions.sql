@@ -22,7 +22,7 @@ BEGIN
 		FETCH v_all INTO v_column;
 		EXIT WHEN NOT FOUND;
 
-		RETURN NEXT matches(v_column.column, '^(?:[a-z]+_)+[a-z]+$', 'Column name contains alphabetic words separated by underscores.');
+		RETURN NEXT matches(v_column.column_name, '^(?:[a-z]+_)+[a-z]+$', 'Column name contains alphabetic words separated by underscores.');
 	END LOOP;
 	CLOSE v_all;
 	OPEN v_unlimited;
@@ -30,7 +30,7 @@ BEGIN
 		FETCH v_unlimited INTO v_column;
 		EXIT WHEN NOT FOUND;
 
-		RETURN NEXT col_has_check(v_column.schema, v_column.table, v_column.column, 'Columns that are not implicitly limited on range must be explicitly limited.');
+		RETURN NEXT col_has_check(v_column.table_schema, v_column.table_name, v_column.column_name, 'Columns that are not implicitly limited on range must be explicitly limited.');
 	END LOOP;
 	CLOSE v_unlimited;
 END;
