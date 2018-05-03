@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION discord.AddBot(p_Server_Id bigint) RETURNS void AS $$
 BEGIN
-	IF p_Server_Id IS NOT NULL THEN
+	IF p_Server_Id IS NULL THEN
 		RAISE SQLSTATE '22004' USING DETAIL = 'p_Server_Id must be provided.';
 	END IF;
     INSERT INTO discord.Servers(Server_Id)
