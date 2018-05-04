@@ -5,7 +5,6 @@ BEGIN
 	ELSIF p_Value IS NULL THEN
 		RAISE SQLSTATE '22004' USING MESSAGE = 'p_Value must be provided.';
 	END IF;
-	BEGIN;
 	IF p_User_Id IS NULL THEN
 		-- Set settings
 		INSERT INTO discord.Settings(Namespace, Server_Id, Value)
@@ -22,9 +21,8 @@ BEGIN
 		ON CONFLICT ON CONSTRAINT User_Settings_UN DO UPDATE
 		SET Value = p_Value;
 	END IF;
-	COMMIT;
 END;
-$$
+$$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION discord.GetSettings(p_Namespace varchar, p_Server_Id bigint, p_User_Id bigint) RETURNS json AS $$
 DECLARE
 	result jsonb;
@@ -39,4 +37,4 @@ BEGIN
 	END IF;
 	RETURN result;
 END;
-$$
+$$ LANGUAGE plpgsql;
