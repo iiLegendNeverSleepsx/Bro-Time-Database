@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION discord.SetSettings(p_Namespace varchar, p_Value jsonb, p_Server_Id bigint, p_User_Id bigint) RETURNS json AS $$
+CREATE OR REPLACE FUNCTION discord.SetSettings(p_Namespace varchar, p_Value jsonb, p_Server_Id bigint DEFAULT null, p_User_Id bigint DEFAULT null) RETURNS json AS $$
 BEGIN
 	IF p_Namespace IS NULL THEN
 		RAISE SQLSTATE '22004' USING MESSAGE = 'p_Namespace must be provided.';
@@ -23,7 +23,7 @@ BEGIN
 	END IF;
 END;
 $$ LANGUAGE plpgsql;
-CREATE OR REPLACE FUNCTION discord.GetSettings(p_Namespace varchar, p_Server_Id bigint, p_User_Id bigint) RETURNS json AS $$
+CREATE OR REPLACE FUNCTION discord.GetSettings(p_Namespace varchar, p_Server_Id bigint DEFAULT null, p_User_Id bigint DEFAULT null) RETURNS json AS $$
 DECLARE
 	result jsonb;
 BEGIN
