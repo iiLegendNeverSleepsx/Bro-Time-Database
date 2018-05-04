@@ -16,11 +16,11 @@ CREATE FUNCTION test.Settings() RETURNS setof text AS $$
 BEGIN
 	-- Setting
 	-- Check for null arguments
-	RETURN NEXT throws_ok($sql$SELECT discord.SetSettings(null::varchar, '{}'::jsonb) FOR UPDATE;$sql$, '22004', 'p_Namespace must be provided.', 'discord.SetSettings should not accept null arguments.');
-	RETURN NEXT throws_ok($sql$SELECT discord.SetSettings('test1'::varchar, null::jsonb) FOR UPDATE;$sql$, '22004', 'p_Value must be provided.', 'discord.SetSettings should not accept null arguments.');
+	RETURN NEXT throws_ok($sql$SELECT discord.SetSettings(null::varchar(32), '{}'::jsonb) FOR UPDATE;$sql$, '22004', 'p_Namespace must be provided.', 'discord.SetSettings should not accept null arguments.');
+	RETURN NEXT throws_ok($sql$SELECT discord.SetSettings('test1'::varchar(32), null::jsonb) FOR UPDATE;$sql$, '22004', 'p_Value must be provided.', 'discord.SetSettings should not accept null arguments.');
 	-- Must create Settings
-	RETURN NEXT lives_ok($sql$SELECT discord.SetSettings('testB'::varchar, '{}'::jsonb, 0) FOR UPDATE;$sql$, 'discord.SetSettings must not throw if called correctly (with p_Server_Id).');
-	RETURN NEXT lives_ok($sql$SELECT discord.SetSettings('testC'::varchar, '{}'::jsonb) FOR UPDATE;$sql$, 'discord.SetSettings must not throw if called correctly (without p_Server_Id).');
+	RETURN NEXT lives_ok($sql$SELECT discord.SetSettings('testB'::varchar(32), '{}'::jsonb, 0) FOR UPDATE;$sql$, 'discord.SetSettings must not throw if called correctly (with p_Server_Id).');
+	RETURN NEXT lives_ok($sql$SELECT discord.SetSettings('testC'::varchar(32), '{}'::jsonb) FOR UPDATE;$sql$, 'discord.SetSettings must not throw if called correctly (without p_Server_Id).');
 	RETURN NEXT results_eq($sql$SELECT Namespace, Value, Server_Id FROM discord.Settings WHERE Namespace = 'testB';$sql$, $sql$SELECT 'testB' AS Namespace, '{}'::jsonb AS Value, 0::bigint AS Server_Id;$sql$,  'discord.SetSettings must have added a Settings record (with Server_Id).');
 	RETURN NEXT results_eq($sql$SELECT Namespace, Value FROM discord.Settings WHERE Namespace = 'testC';$sql$, $sql$SELECT 'testC' AS Namespace, '{}'::jsonb AS Value;$sql$,  'discord.SetSettings must have added a Settings record (without Server_Id).');
 	-- Must create User_Settings
@@ -32,7 +32,7 @@ BEGIN
 	RETURN NEXT results_eq($sql$SELECT Namespace, Value, Server_Id FROM discord.Settings WHERE Namespace = 'testD';$sql$, $sql$SELECT 'testD' AS Namespace, 'null'::jsonb AS Value, 0::bigint AS Server_Id;$sql$, 'discord.SetSettings must create a Settings record for a User_Settings record (with Server_Id).');
 	RETURN NEXT results_eq($sql$SELECT Namespace, Value FROM discord.Settings WHERE Namespace = 'testE';$sql$, $sql$SELECT 'testE' AS Namespace, 'null'::jsonb AS Value;$sql$, 'discord.SetSettings must create a Settings record for a User_Settings record (without Server_Id).');
 	-- Must replace existing Settings
-	RETURN NEXT lives_ok($sql$SELECT discord.SetSettings('testB'::varchar, '{"key": true}'::jsonb, 0) FOR UPDATE;$sql$, 'discord.SetSettings must not throw if called to replace Settings.');
+	RETURN NEXT lives_ok($sql$SELECT discord.SetSettings('testB'::varchar(32), '{"key": true}'::jsonb, 0) FOR UPDATE;$sql$, 'discord.SetSettings must not throw if called to replace Settings.');
 	RETURN NEXT results_eq($sql$SELECT Value FROM discord.Settings WHERE Namespace = 'testB';$sql$, $sql$SELECT '{"key": true}'::jsonb AS Value;$sql$,  'discord.SetSettings must replace existing Settings.');
 	-- Must replace existing User_Settings
 	RETURN NEXT lives_ok($sql$SELECT discord.SetSettings('testD', '{"key": true}'::jsonb, 0, 0) FOR UPDATE;$sql$, 'discord.SetSettings must not throw if called to replace User_Settings.');
