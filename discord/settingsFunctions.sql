@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION discord.SetSettings(p_Namespace varchar, p_Value jsonb, p_Server_Id bigint DEFAULT null, p_User_Id bigint DEFAULT null) RETURNS json AS $$
+CREATE OR REPLACE FUNCTION discord.SetSettings(p_Namespace varchar, p_Value jsonb, p_Server_Id bigint DEFAULT null, p_User_Id bigint DEFAULT null) RETURNS void AS $$
 BEGIN
 	IF p_Namespace IS NULL THEN
 		RAISE SQLSTATE '22004' USING MESSAGE = 'p_Namespace must be provided.';
