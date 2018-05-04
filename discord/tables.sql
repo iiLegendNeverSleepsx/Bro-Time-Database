@@ -13,8 +13,7 @@ CREATE TABLE discord.Settings (
 
 CREATE TABLE discord.User_Settings (
 	Namespace varchar(32)
-		CONSTRAINT User_Settings_NN NOT NULL
-    	CONSTRAINT User_Settings_Namepsace_FK REFERENCES discord.Settings(Namespace),
+		CONSTRAINT User_Settings_NN NOT NULL,
 	User_Id bigint
 		CONSTRAINT User_Settings_NN NOT NULL,
 	Server_Id bigint
