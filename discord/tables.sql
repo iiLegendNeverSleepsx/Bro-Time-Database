@@ -22,7 +22,7 @@ CREATE TABLE discord.User_Settings (
 	Value json
 		CONSTRAINT User_Settings_Value_NN NOT NULL
 		CONSTRAINT User_Settings_Value_C CHECK (pg_column_size(Value) <= 128160),
-	CONSTRAINT User_Settings_UN UNIQUE (Namespace, User_Id, Server_Id)
+	CONSTRAINT User_Settings_UN UNIQUE (Namespace, User_Id, Server_Id),
 	CONSTRAINT User_Settings_Settings_FK FOREIGN KEY (Namespace, Server_Id) REFERENCES discord.Settings(Namespace, Server_Id)
 );
 
