@@ -1,21 +1,29 @@
 -- Create the tables.
 CREATE TABLE discord.Settings (
 	Namespace varchar(32)
-		CONSTRAINT Settings_Namespace_PK PRIMARY KEY
+		CONSTRAINT Settings_Namespace_NN NOT NULL
 		CONSTRAINT Settings_Namespace_C CHECK (Namespace SIMILAR TO '[a-zA-Z]'),
-	Value json
+	Server_Id bigint
+		CONSTRAINT Settings_Server_Id_N NULL,
+	Value json DEFAULT = 'null'
 		CONSTRAINT Settings_Value_NN NOT NULL
-		CONSTRAINT Settings_Value_C CHECK (pg_column_size(Value) <= 128160)
+		CONSTRAINT Settings_Value_C CHECK (pg_column_size(Value) <= 128160),
+	CONSTRAINT Settings_UN UNIQUE (Namespace, Server_Id)
 );
 
 CREATE TABLE discord.User_Settings (
-	User_Id bigint,
+	Namespace varchar(32)
+		CONSTRAINT User_Settings_NN NOT NULL
+    	CONSTRAINT User_Settings_Namepsace_FK REFERENCES discord.Settings(Namespace),
+	User_Id bigint
+		CONSTRAINT User_Settings_NN NOT NULL,
+	Server_Id bigint
+		CONSTRAINT User_Settings_N NULL,
 	Value json
 		CONSTRAINT User_Settings_Value_NN NOT NULL
 		CONSTRAINT User_Settings_Value_C CHECK (pg_column_size(Value) <= 128160),
-	Namespace varchar(32)
-    	CONSTRAINT User_Settings_Namepsace_FK REFERENCES discord.Settings(Namespace),
-	CONSTRAINT User_Settings_PK PRIMARY KEY (User_Id, Namespace)
+	CONSTRAINT User_Settings_UN UNIQAUE (Namespace, User_Id, Server_Id)
+	CONSTRAINT User_Settings_Settings_FK FOREIGN KEY (Namespace, Server_Id) REFERENCES discord.Settings(Namespace, Server_Id)
 );
 
 CREATE TABLE discord.Triggers (
