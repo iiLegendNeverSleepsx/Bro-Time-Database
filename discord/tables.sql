@@ -5,7 +5,7 @@ CREATE TABLE discord.Settings (
 		CONSTRAINT Settings_Namespace_C CHECK (Namespace SIMILAR TO '[a-zA-Z]'),
 	Server_Id bigint
 		CONSTRAINT Settings_Server_Id_N NULL,
-	Value json DEFAULT 'null'
+	Value jsonb DEFAULT 'null'
 		CONSTRAINT Settings_Value_NN NOT NULL
 		CONSTRAINT Settings_Value_C CHECK (pg_column_size(Value) <= 128160),
 	CONSTRAINT Settings_UN UNIQUE (Namespace, Server_Id)
@@ -18,7 +18,7 @@ CREATE TABLE discord.User_Settings (
 		CONSTRAINT User_Settings_NN NOT NULL,
 	Server_Id bigint
 		CONSTRAINT User_Settings_N NULL,
-	Value json
+	Value jsonb
 		CONSTRAINT User_Settings_Value_NN NOT NULL
 		CONSTRAINT User_Settings_Value_C CHECK (pg_column_size(Value) <= 128160),
 	CONSTRAINT User_Settings_UN UNIQUE (Namespace, User_Id, Server_Id),
