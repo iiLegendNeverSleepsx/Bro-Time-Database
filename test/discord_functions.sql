@@ -39,5 +39,13 @@ BEGIN
 	RETURN NEXT results_eq($sql$SELECT Value FROM discord.User_Settings WHERE Namespace = 'testD';$sql$, $sql$SELECT '{"key": true}'::jsonb AS Value;$sql$,  'discord.SetSettings must replace existing User_Settings.');
 	-- Must not replace Settings for User_Settings
 	RETURN NEXT results_eq($sql$SELECT Value FROM discord.Settings WHERE Namespace = 'testD';$sql$, $sql$SELECT 'null'::jsonb AS Value;$sql$, 'discord.SetSettings must not replace a Settings record when replacing a User_Settings record.');
+	-- Getting
+	-- Check for null arguments
+	RETURN NEXT throws_ok($sql$SELECT discord.GetSettings(null);$sql$, '22004', 'p_Namespace must be provided.', 'discord.GetSettings should not accept null arguments.');
+	-- Settings must be returned if called correctly.
+	RETURN NEXT results_eq($sql$SELECT discord.GetSettings('testB');$sql$, $sql$SELECT '{}'::jsonb;$sql$, 'discord.GetSettings must return settings if called correctly.');
+	RETURN NEXT results_eq($sql$SELECT discord.GetSettings('testD');$sql$, $sql$SELECT '{}'::jsonb;$sql$, 'discord.GetSettings must return user settings if called correctly.');
+	-- A call for non-existent settings must return null.
+	RETURN NEXT results_eq($sql$SELECT discord.GetSettings('testF');$sql$, $sql$SELECT 'null'::jsonb;$sql$, 'discord.GetSettings must return null jsonb if called with invalid arguments.');
 END;
 $$ LANGUAGE plpgsql;

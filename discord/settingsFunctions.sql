@@ -23,7 +23,7 @@ BEGIN
 	END IF;
 END;
 $$ LANGUAGE plpgsql;
-CREATE OR REPLACE FUNCTION discord.GetSettings(p_Namespace varchar, p_Server_Id bigint DEFAULT null, p_User_Id bigint DEFAULT null) RETURNS json AS $$
+CREATE OR REPLACE FUNCTION discord.GetSettings(p_Namespace varchar, p_Server_Id bigint DEFAULT null, p_User_Id bigint DEFAULT null) RETURNS jsonb AS $$
 DECLARE
 	result jsonb;
 BEGIN
@@ -32,8 +32,14 @@ BEGIN
 	END IF;
 	IF p_User_Id IS NULL THEN
 		-- Get settings
+		result := (SELECT Value
+			FROM discord.Settings
+			WHERE Namespace = p_Namespace AND Server_Id = p_Server_Id);
 	ELSE
 		-- Get user settings
+		result := (SELECT Value
+			FROM discord.User_Settings
+			WHERE Namespace = p_Namespace AND User_Id = p_User_Id AND Server_Id = p_Server_Id);
 	END IF;
 	RETURN result;
 END;
