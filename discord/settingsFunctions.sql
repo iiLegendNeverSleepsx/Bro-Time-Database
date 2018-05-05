@@ -41,6 +41,9 @@ BEGIN
 			FROM discord.User_Settings
 			WHERE Namespace = p_Namespace AND User_Id = p_User_Id AND Server_Id = p_Server_Id);
 	END IF;
+	IF result IS NULL THEN
+		result := 'null'::jsonb;
+	END IF;
 	RETURN result;
 END;
 $$ LANGUAGE plpgsql;
