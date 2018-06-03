@@ -49,3 +49,14 @@ BEGIN
 	RETURN NEXT results_eq($sql$SELECT discord.GetSettings('testF');$sql$, $sql$SELECT 'null'::jsonb;$sql$, 'discord.GetSettings must return null jsonb if called with invalid arguments.');
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE FUNCTION test.Wallet() RETURNS setof text AS $$
+BEGIN
+	-- WalletGet
+
+	-- WalletChange
+
+	-- WalletTransfer
+	
+END;
+$$ LANGUAGE plpgsql;
