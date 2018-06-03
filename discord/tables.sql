@@ -1,4 +1,11 @@
 -- Create the tables.
+CRATE TABLE discord.Wallet (
+	User_Id bigint
+		CONSTRAINT Wallet_User_Id_PK PRIMARY KEY,
+	Amount integer
+		CONSTRAINT Wallet_Amount_C CHECK (Amount between 0 and 1000000000)
+);
+
 CREATE TABLE discord.Settings (
 	Namespace varchar(32)
 		CONSTRAINT Settings_Namespace_NN NOT NULL
