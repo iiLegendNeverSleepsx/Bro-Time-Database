@@ -1,5 +1,5 @@
 -- Create the tables.
-CRATE TABLE discord.Wallet (
+CREATE TABLE discord.Wallet (
 	User_Id bigint
 		CONSTRAINT Wallet_User_Id_PK PRIMARY KEY,
 	Amount integer
