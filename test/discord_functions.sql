@@ -54,42 +54,53 @@ CREATE FUNCTION test.Wallet() RETURNS setof text AS $$
 BEGIN
 	-- WalletChange
 	-- input: null, 10 output: The function should do nothing (not throw).
-
+	RETURN NEXT lives_ok($sql$SELECT discord.WalletChange(null, 10) FOR UPDATE;$sql$, 'Reason.');
 	-- input: 0, 10 output: The function should create a Wallet for user id 0.
-
+	RETURN NEXT lives_ok($sql$SELECT discord.WalletChange(0, 10) FOR UPDATE;$sql$, 'Reason.');
+	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(0);$sql$, $sql$SELECT 10;$sql$, 'Reason.');
 	-- input: 0, -5 output: User id 0 should have 5 bits.
-
+	RETURN NEXT lives_ok($sql$SELECT discord.WalletChange(0, -5) FOR UPDATE;$sql$, 'Reason.');
+	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(0);$sql$, $sql$SELECT 5;$sql$, 'Reason.');
 	-- input: 0, 5 output: User id 0 should have 10 bits.
-
+	RETURN NEXT lives_ok($sql$SELECT discord.WalletChange(0, 5) FOR UPDATE;$sql$, 'Reason.');
+	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(0);$sql$, $sql$SELECT 10;$sql$, 'Reason.');
 	-- input: 0, -10 output: User id 0 should have 0 bits.
-
+	RETURN NEXT lives_ok($sql$SELECT discord.WalletChange(0, -10) FOR UPDATE;$sql$, 'Reason.');
+	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(0);$sql$, $sql$SELECT 0;$sql$, 'Reason.');
 	-- input: 0, 1000000000 output: User id 0 should have 1000000000 bits.
-
+	RETURN NEXT lives_ok($sql$SELECT discord.WalletChange(0, 1000000000) FOR UPDATE;$sql$, 'Reason.');
+	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(0);$sql$, $sql$SELECT 1000000000;$sql$, 'Reason.');
 	-- input: 0, 1 output: User id 0 should have 1000000000 bits.
-
+	RETURN NEXT lives_ok($sql$SELECT discord.WalletChange(0, 1) FOR UPDATE;$sql$, 'Reason.');
+	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(0);$sql$, $sql$SELECT 1000000000;$sql$, 'Reason.');
 	-- input: 0, -1000000001 output: User id 0 should have 0 bits.
-
+	RETURN NEXT lives_ok($sql$SELECT discord.WalletChange(0, -1000000001) FOR UPDATE;$sql$, 'Reason.');
+	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(0);$sql$, $sql$SELECT 0;$sql$, 'Reason.');
+	-- Don't accept null arguments.
+	RETURN NEXT throws_ok($sql$SELECT discord.WalletChange(null, null);$sql$, '22004', 'p_Amount must be provided.', 'Reason.');
 	-- WalletGet
 	-- input: null output: Return -1.
-
-	-- input: Set user id 0 to 0 bits. 0 output: 0 bits.
-
-	-- input: Set user id 0 to 1000000000 bits. 0 output: 1000000000 bits.
-
-	-- input: Set user id 0 to -1 bits. 0 output: 0 bits.
-
-	-- input: Set user id 0 to 1000000001 bits. output: 1000000000 bits.
-
+	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(null);$sql$, $sql$SELECT -1;$sql$, 'Reason.');
 	-- WalletTransfer
 	-- input: 1, 0, 10 output: Throw "No funds available."
-
+	RETURN NEXT throws_ok($sql$SELECT discord.WalletTransfer(1, 0, 10);$sql$, 'P0001', 'No funds available.', 'Reason.');
 	-- input: Give 0, 10 bits. 0, 1, 10 output: User id 1 should have 8 bits (20% fee, rounded up).
-
+	RETURN NEXT lives_ok($sql$SELECT discord.WalletChange(0, 10) FOR UPDATE;$sql$, 'Reason.');
+	RETURN NEXT lives_ok($sql$SELECT discord.WalletTransfer(0, 1, 10) FOR UPDATE;$sql$, 'Reason.');
+	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(1);$sql$, $sql$SELECT 8;$sql$, 'Reason.');
 	-- input: 0, 1, 10 output: Throw "Not enough funds available."
-
+	RETURN NEXT throws_ok($sql$SELECT discord.WalletTransfer(0, 1, 10);$sql$, 'P0001', 'Not enough funds available.', 'Reason.');
 	-- input: 1, 0, 10 output: User 0 should have 7 bits.
-
+	RETURN NEXT lives_ok($sql$SELECT discord.WalletTransfer(1, 0, 10) FOR UPDATE;$sql$, 'Reason.');
+	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(0);$sql$, $sql$SELECT 7;$sql$, 'Reason.');
 	-- input: 0, 1, -10 output: Throw "Can't transfer back."
-
+	RETURN NEXT throws_ok($sql$SELECT discord.WalletTransfer(0, 1, -10);$sql$, 'P0001', 'Can''t transfer back.', 'Reason.');
+	-- input: null, 1, 10
+	RETURN NEXT lives_ok($sql$SELECT discord.WalletTransfer(null, 1, 10) FOR UPDATE;$sql$, 'Reason.');
+	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(1);$sql$, $sql$SELECT 7;$sql$, 'Reason.');
+	-- Should transfer to bank.
+	RETURN NEXT lives_ok($sql$SELECT discord.WalletTransfer(1, null, 7) FOR UPDATE;$sql$, 'Reason.');
+	-- Don't allow null arguments.
+	RETURN NEXT throws_ok($sql$SELECT discord.WalletTransfer(null, null, null);$sql$, '22004', 'p_Amount must be provided.', 'Reason.');
 END;
 $$ LANGUAGE plpgsql;

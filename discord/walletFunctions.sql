@@ -28,18 +28,14 @@ CREATE OR REPLACE FUNCTION discord.WalletTransfer(bigint p_From_User_Id DEFAULT 
 DECLARE
 	bigint swap;
 BEGIN
-	-- Swap if transfering back.
 	IF p_Amount < 0 THEN
-		swap := p_From_User_Id;
-		p_From_User_Id := p_To_User_Id;
-		p_To_User_Id := swap;
-		p_Amount := abs(p_Amount);
+		RAISE 'Can''t transfer back.';
 	END IF;
 	BEGIN;
 	-- From user.
 	IF p_From_User_Id IS NOT NULL THEN
-		IF NOT EXISTS () THEN
-			RAISE 'Not funds available.';
+		IF NOT EXISTS (SELECT User_Id FROM discord.Wallet WHERE User_Id = p_From_User_Id) THEN
+			RAISE 'No funds available.';
 		END IF;
 		UPDATE discord.Wallet
 		SET Amount = Amount - p_Amount
@@ -48,9 +44,9 @@ BEGIN
 	-- To user.
 	IF p_To_User_Id IS NOT NULL THEN
 		INSERT INTO discord.Wallet(User_Id, Amount)
-		VALUES(p_To_User_Id, p_Amount)
+		VALUES(p_To_User_Id, ceil(p_Amount - p_Amount*.20))
 		ON CONFLICT ON CONSTRAINT Wallet_User_Id_PK DO UPDATE
-		SET Amount = GREATEST(LEAST(discord.Wallet.Amount + p_Amount, 1000000000), 0);
+		SET Amount = GREATEST(LEAST(discord.Wallet.Amount + ceil(p_Amount - p_Amount*.20), 1000000000), 0);
 	END IF;
 	COMMIT;
 EXCEPTION
