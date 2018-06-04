@@ -39,7 +39,7 @@ BEGIN
 	-- From user.
 	IF p_From_User_Id IS NOT NULL THEN
 		IF NOT EXISTS () THEN
-			RAISE 'No funds';
+			RAISE 'Not funds available.';
 		END IF;
 		UPDATE discord.Wallet
 		SET Amount = Amount - p_Amount
@@ -55,6 +55,6 @@ BEGIN
 	COMMIT;
 EXCEPTION
 	WHEN check_violation THEN
-		RAISE 'Not enough funds';
+		RAISE 'Not enough funds available.';
 END;
 $$ LANGUAGE plpgsql;

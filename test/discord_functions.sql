@@ -52,11 +52,44 @@ $$ LANGUAGE plpgsql;
 
 CREATE FUNCTION test.Wallet() RETURNS setof text AS $$
 BEGIN
-	-- WalletGet
-
 	-- WalletChange
+	-- input: null, 10 output: The function should do nothing (not throw).
+
+	-- input: 0, 10 output: The function should create a Wallet for user id 0.
+
+	-- input: 0, -5 output: User id 0 should have 5 bits.
+
+	-- input: 0, 5 output: User id 0 should have 10 bits.
+
+	-- input: 0, -10 output: User id 0 should have 0 bits.
+
+	-- input: 0, 1000000000 output: User id 0 should have 1000000000 bits.
+
+	-- input: 0, 1 output: User id 0 should have 1000000000 bits.
+
+	-- input: 0, -1000000001 output: User id 0 should have 0 bits.
+
+	-- WalletGet
+	-- input: null output: Return -1.
+
+	-- input: Set user id 0 to 0 bits. 0 output: 0 bits.
+
+	-- input: Set user id 0 to 1000000000 bits. 0 output: 1000000000 bits.
+
+	-- input: Set user id 0 to -1 bits. 0 output: 0 bits.
+
+	-- input: Set user id 0 to 1000000001 bits. output: 1000000000 bits.
 
 	-- WalletTransfer
-	
+	-- input: 1, 0, 10 output: Throw "No funds available."
+
+	-- input: Give 0, 10 bits. 0, 1, 10 output: User id 1 should have 8 bits (20% fee, rounded up).
+
+	-- input: 0, 1, 10 output: Throw "Not enough funds available."
+
+	-- input: 1, 0, 10 output: User 0 should have 7 bits.
+
+	-- input: 0, 1, -10 output: Throw "Can't transfer back."
+
 END;
 $$ LANGUAGE plpgsql;
