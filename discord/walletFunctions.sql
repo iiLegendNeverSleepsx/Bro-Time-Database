@@ -29,7 +29,6 @@ BEGIN
 	IF p_Amount < 0 THEN
 		RAISE 'Can''t transfer back.';
 	END IF;
-	BEGIN;
 	-- From user.
 	IF p_From_User_Id IS NOT NULL THEN
 		IF NOT EXISTS (SELECT User_Id FROM discord.Wallet WHERE User_Id = p_From_User_Id) THEN
@@ -46,7 +45,6 @@ BEGIN
 		ON CONFLICT ON CONSTRAINT Wallet_User_Id_PK DO UPDATE
 		SET Amount = GREATEST(LEAST(discord.Wallet.Amount + ceil(p_Amount - p_Amount*.20), 1000000000), 0);
 	END IF;
-	COMMIT;
 EXCEPTION
 	WHEN check_violation THEN
 		RAISE 'Not enough funds available.';
