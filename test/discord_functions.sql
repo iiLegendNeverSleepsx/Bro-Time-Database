@@ -68,8 +68,8 @@ BEGIN
 	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(0);$sql$, $sql$SELECT 6;$sql$, 'discord.WalletGet should retuurn 7 bits.');
 	RETURN NEXT throws_ok($sql$SELECT discord.WalletTransfer(-10, 0, 1);$sql$, 'P0001', 'Can''t transfer back.', 'discord.WalletTransfer should throw if transfering a negative amount.');
 	RETURN NEXT lives_ok($sql$SELECT discord.WalletTransfer(10, null, 1) FOR UPDATE;$sql$, 'discord.WalletTransfer should transfer from the bank user (10 bits, with %20 fee).');
-	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(1);$sql$, $sql$SELECT 14;$sql$, 'discord.WalletGet should return 7 bits.');
-	RETURN NEXT lives_ok($sql$SELECT discord.WalletTransfer(14, 1, null) FOR UPDATE;$sql$, 'discord.WalletTransfer should transfer to the bank user (7 bits, with %20 fee).');
+	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(1);$sql$, $sql$SELECT 9;$sql$, 'discord.WalletGet should return 7 bits.');
+	RETURN NEXT lives_ok($sql$SELECT discord.WalletTransfer(9, 1, null) FOR UPDATE;$sql$, 'discord.WalletTransfer should transfer to the bank user (7 bits, with %20 fee).');
 	RETURN NEXT throws_ok($sql$SELECT discord.WalletTransfer(null, null, null);$sql$, '22004', 'p_Amount must be provided.', 'discord.WalletTransfer should not accept a null amount.');
 END;
 $$ LANGUAGE plpgsql;

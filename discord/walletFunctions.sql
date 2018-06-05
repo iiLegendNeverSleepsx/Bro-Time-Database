@@ -16,7 +16,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION discord.WalletChange(p_Amount integer, p_User_Id bigint DEFAULT null) RETURNS void AS $$
 BEGIN
 	IF p_Amount IS NULL THEN
-		RAISE 'p_Amount must be provided.';
+		RAISE SQLSTATE '22004' USING MESSAGE = 'p_Amount must be provided.';
 	END IF;
 	IF p_User_Id IS NOT NULL THEN
 		INSERT INTO discord.Wallet(User_Id, Amount)
@@ -29,7 +29,9 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION discord.WalletTransfer(p_Amount integer, p_From_User_Id bigint DEFAULT null, p_To_User_Id bigint DEFAULT null) RETURNS void AS $$
 BEGIN
-	IF p_Amount < 0 THEN
+	IF p_Amount IS NULL THEN
+		RAISE SQLSTATE '22004' USING MESSAGE = 'p_Amount must be provided.';
+	ELSIF p_Amount < 0 THEN
 		RAISE 'Can''t transfer back.';
 	END IF;
 	-- From user.
