@@ -15,6 +15,9 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION discord.WalletChange(p_Amount integer, p_User_Id bigint DEFAULT null) RETURNS void AS $$
 BEGIN
+	IF p_Amount IS NULL THEN
+		RAISE 'p_Amount must be provided.';
+	END IF;
 	IF p_User_Id IS NOT NULL THEN
 		INSERT INTO discord.Wallet(User_Id, Amount)
 		VALUES (p_User_Id, GREATEST(LEAST(p_Amount, 1000000000), 0))

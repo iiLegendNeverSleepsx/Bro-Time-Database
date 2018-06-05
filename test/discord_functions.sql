@@ -64,12 +64,12 @@ BEGIN
 	RETURN NEXT lives_ok($sql$SELECT discord.WalletTransfer(10, 0, 1) FOR UPDATE;$sql$, 'discord.WalletTransfer should transfer 10 (%20 fee) bits.');
 	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(1);$sql$, $sql$SELECT 8;$sql$, 'discord.WalletGet should return transfered bits (8 bits).');
 	RETURN NEXT throws_ok($sql$SELECT discord.WalletTransfer(10, 0, 1);$sql$, 'P0001', 'Not enough funds available.', 'discord.WalletTransfer should throw if missing bits.');
-	RETURN NEXT lives_ok($sql$SELECT discord.WalletTransfer(10, 1, 0) FOR UPDATE;$sql$, 'discord.WalletTransfer should transfer bits back (10 bits with %20 fee).');
-	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(0);$sql$, $sql$SELECT 7;$sql$, 'discord.WalletGet should retuurn 7 bits.');
+	RETURN NEXT lives_ok($sql$SELECT discord.WalletTransfer(7, 1, 0) FOR UPDATE;$sql$, 'discord.WalletTransfer should transfer bits back (10 bits with %20 fee).');
+	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(0);$sql$, $sql$SELECT 6;$sql$, 'discord.WalletGet should retuurn 7 bits.');
 	RETURN NEXT throws_ok($sql$SELECT discord.WalletTransfer(-10, 0, 1);$sql$, 'P0001', 'Can''t transfer back.', 'discord.WalletTransfer should throw if transfering a negative amount.');
 	RETURN NEXT lives_ok($sql$SELECT discord.WalletTransfer(10, null, 1) FOR UPDATE;$sql$, 'discord.WalletTransfer should transfer from the bank user (10 bits, with %20 fee).');
-	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(1);$sql$, $sql$SELECT 7;$sql$, 'discord.WalletGet should return 7 bits.');
-	RETURN NEXT lives_ok($sql$SELECT discord.WalletTransfer(7, 1, null) FOR UPDATE;$sql$, 'discord.WalletTransfer should transfer to the bank user (7 bits, with %20 fee).');
+	RETURN NEXT results_eq($sql$SELECT discord.WalletGet(1);$sql$, $sql$SELECT 14;$sql$, 'discord.WalletGet should return 7 bits.');
+	RETURN NEXT lives_ok($sql$SELECT discord.WalletTransfer(14, 1, null) FOR UPDATE;$sql$, 'discord.WalletTransfer should transfer to the bank user (7 bits, with %20 fee).');
 	RETURN NEXT throws_ok($sql$SELECT discord.WalletTransfer(null, null, null);$sql$, '22004', 'p_Amount must be provided.', 'discord.WalletTransfer should not accept a null amount.');
 END;
 $$ LANGUAGE plpgsql;
