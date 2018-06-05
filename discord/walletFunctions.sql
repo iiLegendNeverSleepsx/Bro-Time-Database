@@ -13,7 +13,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION discord.WalletChange(p_User_Id bigint DEFAULT null, p_Amount integer) RETURNS void AS $$
+CREATE OR REPLACE FUNCTION discord.WalletChange(p_Amount integer, p_User_Id bigint DEFAULT null) RETURNS void AS $$
 BEGIN
 	IF p_User_Id IS NOT NULL THEN
 		INSERT INTO discord.Wallet(User_Id, Amount)
@@ -24,7 +24,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION discord.WalletTransfer(p_From_User_Id bigint DEFAULT null, p_To_User_Id bigint DEFAULT null, p_Amount integer) RETURNS void AS $$
+CREATE OR REPLACE FUNCTION discord.WalletTransfer(p_Amount integer, p_From_User_Id bigint DEFAULT null, p_To_User_Id bigint DEFAULT null) RETURNS void AS $$
 BEGIN
 	IF p_Amount < 0 THEN
 		RAISE 'Can''t transfer back.';
